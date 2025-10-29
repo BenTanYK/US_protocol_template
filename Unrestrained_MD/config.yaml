@@ -1,0 +1,11 @@
+Receptor residue range: # 0-indexing
+- 0 # First receptor residx
+- 99 # Last receptor residx
+Ligand residue range: # 0-indexing
+- 100 # First ligand residx
+- 199 # Last ligand residx
+Boresch anchor points: # Select these from RMSF plot
+  res_B: 0
+  res_C: 0
+  res_b: 0
+  res_c: 0
