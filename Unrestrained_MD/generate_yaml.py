@@ -435,13 +435,13 @@ u.trajectory[save_idx]
 
 # Check for collinearity
 pos_a = u.atoms[rec_group].center_of_mass()
-pos_b = u.atoms[[idx_b]].center_of_mass()
-pos_c = u.atoms[[idx_c]].center_of_mass()
+pos_b = u.atoms[[obtain_CA_idx(u, res_b)]].center_of_mass()
+pos_c = u.atoms[[obtain_CA_idx(u, res_c)]].center_of_mass()
 pos_A = u.atoms[lig_group].center_of_mass()
-pos_B = u.atoms[[idx_B]].center_of_mass()
-pos_C = u.atoms[[idx_C]].center_of_mass()
+pos_B = u.atoms[[obtain_CA_idx(u, res_B)]].center_of_mass()
+pos_C = u.atoms[[obtain_CA_idx(u, res_C)]].center_of_mass()
 
-tolerance = np.radians(10) # Raise error for angle between 170 and 190 deg 
+tolerance = np.radians(15) # Raise error for angle between 165 and 195 deg 
 
 angle = obtain_angle(pos_c, pos_b, pos_a)
 if np.pi - tolerance < angle < np.pi + tolerance:
@@ -459,11 +459,18 @@ angle = obtain_angle(pos_A, pos_B, pos_C)
 if np.pi - tolerance < angle < np.pi + tolerance:
     raise ValueError(f"Possible collinearity detected between anchor points A, B and C...")
 
+# Make save directories if they don't exist
+if not os.path.exists('equilibrated_structures'):
+    os.makedirs('equilibrated_structures')
+
+if not os.path.exists('../umbrella_sampling/equilibrated_structures'):
+    os.makedirs('../umbrella_sampling/equilibrated_structures')
+
 # Save the equilibrated frame to Unrestrained_MD and umbrella_sampling directories
 u.atoms.write('equilibrated_structures/eq_frame.pdb')
 u.atoms.write('../umbrella_sampling/equilibrated_structures/eq_frame.pdb')
 
-print(f"\nSave equilibrated snapshot from run 1 after {equil_time+5.0} ns\n")
+print(f"\nSave equilibrated snapshot from run 1 after {interface_equilibration_time+5.0} ns\n")
 
 """Calculating Boresch distributions"""
 print('Calculating Boresch histograms...\n')
