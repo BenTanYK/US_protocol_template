@@ -92,14 +92,16 @@ elif restraint_type != 'heavy_atom':
 dt = timestep*unit.femtoseconds 
 
 # Load param and coord files
-prmtop = app.AmberPrmtopFile(f'{inputdir}/system.prmtop')
-inpcrd = app.AmberInpcrdFile(f'{inputdir}/system.inpcrd')
+prmtop = app.AmberPrmtopFile(f'../equilibrated_structures/complex_eq.prmtop')
 
 system = prmtop.createSystem(nonbondedMethod=app.PME, hydrogenMass=1.5*unit.amu, nonbondedCutoff=1.0*unit.nanometer, constraints=app.HBonds)  
 integrator = mm.LangevinMiddleIntegrator(0.0000*unit.kelvin, 1.0000/unit.picosecond, dt)
 
 simulation = app.Simulation(prmtop.topology, system, integrator)
-simulation.context.setPositions(inpcrd.positions)
+
+# Set positions to the correct window
+pdb = app.PDBFile(f"windows/{r0}/{r0}.pdb")
+simulation.context.setPositions(pdb.positions)
 
 # Add reporters to output data
 simulation.reporters.append(app.StateDataReporter(f'{savedir}/{r0}.csv', 1000, step=True, time=True, potentialEnergy=True, kineticEnergy=True, totalEnergy=True, temperature=True, volume=True, density=True, speed=True))
@@ -130,8 +132,7 @@ for atom in simulation.topology.atoms():
 
 """RMSD Restraints"""
 
-reference_positions = inpcrd.positions
-
+reference_positions = simulation.context.getState(getPositions=True).getPositions()
 # 0-indexed residues
 receptor_residues = US_data['Receptor residues']
 ligand_residues = US_data['Ligand residues']
@@ -164,7 +165,7 @@ simulation.context.reinitialize(preserveState=True)
 for atom in simulation.topology.atoms():
     if atom.index==receptor_atoms[-1] and atom.residue.name!='MOL':
         raise ValueError(f'Small molecule is missing!')
-
+    
 """Radial separation CV"""
 
 # 1-indexing from MDAnalysis
