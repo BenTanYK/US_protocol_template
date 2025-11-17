@@ -21,7 +21,7 @@ The protocol follows three main stages:
 3. Submit an MD simulation to slurm using ```sbatch submitMD.sh -r $RUN_NUMBER```. It is recommended to perform three runs.
 4. Once the MD simulations have finished, calculate the RMSD and RMSF for the trajectories by running ```analyse_RMSF.py```. By default, this script assumes there are three runs of unrestrained MD, you can change this if necessary.
 5. Visualise the RMSF in the notebook ```select_anchors.ipynb``` and pick stable residues which will become the anchor points for the Boresch angles and dihedrals. Ensure that the anchor point CA indices have been written to ```config.yaml```
-6. Run the script ```generate_yaml.py``` to extract the interface residues, interface equilbration time and Boresch DOF equilibrium values. These values are written to ```../umbrella_sampling/US_config.yaml```. Plots of the Boresch DOF histograms and the interface RMSD are written to the ```plots``` folder. A pdb snapshot of the equilibrated reference frame is written to the ```equilibrated_structures``` directory in both the ```Unrestrained_MD``` and ```umbrella_sampling``` locations. By default, the snapshot is saved from run 1 of the unrestrained MD simulations.
+6. Run the script ```generate_yaml.py``` to extract the interface residues, interface equilbration time and Boresch DOF equilibrium values. These values are written to ```../umbrella_sampling/US_config.yaml```. Plots of the Boresch DOF histograms and the interface RMSD are written to the ```plots``` folder. A pdb snapshot of the equilibrated reference frame is written to the ```equilibrated_structures``` directory in both the ```Unrestrained_MD``` and ```umbrella_sampling``` locations. By default, the snapshot is saved from run 1 of the unrestrained MD simulations. Within this repository, the ```equilibrated_structures``` has been populated with example inputs for the CRBN-lenalidomide-CK1a ternary complex (PDB [5FQD](https://www.rcsb.org/structure/5FQD)).
 
 ## Running Steered MD
 
@@ -40,11 +40,12 @@ The ```scripts``` directory contains slurm/grid engine submission scripts for th
 
 An Umbrella Sampling simulation can be submitted using the ```submitrun``` executable. This executable calls the script ```run_window.py``` to submit each the simulation for each umbrella. Note that if you want to perform the resolvation step for each window, which can increase simulation speed by $\sim 20$ %, you will need to modify ```windows/modify_pdb.pdb``` to match your specific system. To then use your resolvated ```system.prmtop```/```system.inpcrd``` input files, use the ```run_window_resolvated.py``` script.
 
-Before submitting the ```submitrun``` executable, modify the ```params.in``` file to specify all parameters (force constants, sampling time, etc.) You can specify the window spacing by providing comma separated values in the r0_vals.list file. 
+Before submitting the ```submitrun``` executable, modify the ```params.in``` file to specify all parameters (force constants, sampling time, etc.) You can specify the window spacing by providing comma separated values in the ```r0_vals.list``` file. 
 
 ## RMSD and Boresch US
 
-The ```run_window.py``` file must be again suitably modified within ```umbrella_sampling/RMSD``` and ```umbrella_sampling/Boresch``` to match the system of interest. Simulations are submitted via preparation of ```params.in``` and ```CV0_vals.list``` in the same way as for the separation PMF. 
+- Amber .prmtop/.inpcrd inputs should be prepared for the isolated ligand and glue/PROTAC-bound receptor within the ```equilibrated_structures``` directory. These inputs should be named ```ligand.prmtop```/```receptor.prmtop``` respectively.
+- US simulations are submitted in the same way as for the separation PMF (i.e. via the ```submitrun``` executable that reads in the simulation parameters from ```params.in```/```r0_vals.list```). For convenience, a python script called ```submit_triplicate.py``` can be used to submit triplicate US simulations for every system (Boresch and RMSD US).
 
 ## Analysis
 
