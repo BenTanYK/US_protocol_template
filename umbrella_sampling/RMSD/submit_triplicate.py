@@ -1,6 +1,6 @@
 import subprocess
 
-systems = ['receptor_glue', 'ligand', 'receptor_glue_only', 'ligand_only', 'receptor_gluewithligand', 'ligandwithreceptor_glue'] # List of all systems
+systems = ['receptor_glue', 'ligand', 'receptor_glue_only', 'ligandwithreceptor_glue'] # List of all systems
 
 for species in systems:
 
