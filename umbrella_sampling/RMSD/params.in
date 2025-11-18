@@ -6,8 +6,8 @@ species = ligand # Options are receptor_glue, ligand, receptor_glue_only, ligand
 """MD parameters"""
 timestep = 4 # fs
 save_traj = False # True or False
-equilibration_time = 0 # ns
-sampling_time = 20 # ns
+equilibration_time = 2 # ns
+sampling_time = 12 # ns
 n_steps_between_sampling = 125 
 
 """Restraint parameters"""
