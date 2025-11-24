@@ -133,6 +133,7 @@ for atom in simulation.topology.atoms():
 """RMSD Restraints"""
 
 reference_positions = simulation.context.getState(getPositions=True).getPositions()
+
 # 0-indexed residues
 receptor_residues = US_data['Receptor residues']
 ligand_residues = US_data['Ligand residues']
