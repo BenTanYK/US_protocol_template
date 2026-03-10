@@ -31,31 +31,30 @@ dt = 4*unit.femtoseconds
 
 # Load param and coord files
 inpcrd = app.AmberInpcrdFile('../equilibrated_structures/complex_eq.inpcrd')
-# prmtop = app.AmberPrmtopFile('../equilibrated_structures/complex_eq.prmtop', periodicBoxVectors=inpcrd.boxVectors)
 prmtop = app.AmberPrmtopFile('../equilibrated_structures/complex_eq.prmtop')
 
 system = prmtop.createSystem(nonbondedMethod=app.PME, nonbondedCutoff=1.0*unit.nanometer, hydrogenMass=1.5*unit.amu, constraints=app.HBonds)  
-integrator = mm.LangevinMiddleIntegrator(0.0000*unit.kelvin, 1.0000/unit.picosecond, dt)
+integrator = mm.LangevinMiddleIntegrator(6.0000*unit.kelvin, 1.0000/unit.picosecond, dt)
 
 simulation = app.Simulation(prmtop.topology, system, integrator)
+simulation.context.setPeriodicBoxVectors(*inpcrd.boxVectors)
 simulation.context.setPositions(inpcrd.positions)
 
 # Add reporters to output data
+os.makedirs('results/separation/', exist_ok=True)
 simulation.reporters.append(app.DCDReporter('results/separation/sep_traj.dcd', 1000))
 simulation.reporters.append(app.StateDataReporter('results/separation/separation.csv', 1000, step=True, time=True, potentialEnergy=True, kineticEnergy=True, totalEnergy=True, temperature=True, volume=True, density=True, speed=True))
 simulation.reporters.append(app.StateDataReporter(sys.stdout, 2000, step=True, time=True, potentialEnergy=True, temperature=True, speed=True))
 
 # Minimise energy 
 simulation.minimizeEnergy()
+simulation.context.setVelocitiesToTemperature(6.0000*unit.kelvin)
 
 """System heating"""
 
-for i in range(50):
+for i in range(1,50):
     integrator.setTemperature(6*(i+1)*unit.kelvin)
     simulation.step(1000)
-
-simulation.step(1000)
-simulation.context.setVelocitiesToTemperature(300*unit.kelvin)
 
 """Find indices of all small molecule heavy atoms"""
 

@@ -86,9 +86,10 @@ prmtop = app.AmberPrmtopFile('../equilibrated_structures/complex_eq.prmtop')
 inpcrd = app.AmberInpcrdFile('../equilibrated_structures/complex_eq.inpcrd')
 
 system = prmtop.createSystem(nonbondedMethod=app.PME, hydrogenMass=1.5*unit.amu, nonbondedCutoff=1.0*unit.nanometer, constraints=app.HBonds)  
-integrator = mm.LangevinMiddleIntegrator(0.0000*unit.kelvin, 1.0000/unit.picosecond, dt)
+integrator = mm.LangevinMiddleIntegrator(6.0000*unit.kelvin, 1.0000/unit.picosecond, dt)
 
 simulation = app.Simulation(prmtop.topology, system, integrator)
+simulation.context.setPeriodicBoxVectors(*inpcrd.boxVectors)
 simulation.context.setPositions(inpcrd.positions)
 
 # Add reporters to output data
@@ -100,15 +101,13 @@ if save_traj=='True':
 
 # Minimise energy 
 simulation.minimizeEnergy()
+simulation.context.setVelocitiesToTemperature(6.0000*unit.kelvin)
 
 """System heating"""
 
-for i in range(50):
+for i in range(1,50):
     integrator.setTemperature(6*(i+1)*unit.kelvin)
     simulation.step(1000)
-
-simulation.step(1000)
-simulation.context.setVelocitiesToTemperature(300*unit.kelvin)
 
 """Find indices of all glue heavy atoms"""
 
