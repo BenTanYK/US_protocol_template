@@ -16,7 +16,7 @@ The protocol follows three main stages:
 
 ## Running unrestrained MD
 
-1. Prepare your input files as **complex.prmtop**/**complex.inpcrd** within the ```UnrestrainedMD/structures``` directory,  e.g. using ```tleap -f tleap.in```. **Important** - assign the residue name "MOL" to the small molecule when generating input parameters in antechamber.
+1. Prepare your input files as **complex.prmtop**/**complex.inpcrd** within the ```UnrestrainedMD/structures``` directory,  e.g. using ```tleap -f tleap.in```. **Important** - assign the residue name "MOL" to the small molecule when generating input parameters in antechamber. The input files should be equilibrated under NPT conditions. The script ```scripts/NPT_equil.py``` can be used to perform this equilibration if desired.
 2. Specify the receptor and ligand residue indices in config.yaml using **0-indexing**. This is needed to specify the receptor and ligand selections in the analysis scripts.
 3. Submit an MD simulation to slurm using ```sbatch submitMD.sh -r $RUN_NUMBER```. It is recommended to perform three runs.
 4. Once the MD simulations have finished, calculate the RMSD and RMSF for the trajectories by running ```analyse_RMSF.py```. By default, this script assumes there are three runs of unrestrained MD, you can change this if necessary.
@@ -26,7 +26,7 @@ The protocol follows three main stages:
 ## Running Steered MD
 
 The SMD simulation is performed in the ```umbrella_sampling/separation``` directory.
-During the analysis of the unrestained MD simulation, a snapshot of the equilibrated system is saved to ```umbrella_sampling/equilibrated_structures```. You have to generate Amber input files from this snapshot under the name ```complex_eq.prmtop/.inpcrd```. See [Amber LEaP tutorial](https://ambermd.org/tutorials/pengfei/index.php) and [GAFF tutorial](https://ambermd.org/tutorials/basic/tutorial4b/index.php) for help. 
+During the analysis of the unrestained MD simulation, a snapshot of the equilibrated system is saved to ```umbrella_sampling/equilibrated_structures```. You have to generate Amber input files from this snapshot under the name ```complex_eq.prmtop/.inpcrd```. See [Amber LEaP tutorial](https://ambermd.org/tutorials/pengfei/index.php) and [GAFF tutorial](https://ambermd.org/tutorials/basic/tutorial4b/index.php) for help. The script ```scripts/NPT_equil.py``` can be used to perform for NPT equilibration if desired.
 
 **Important** - assign the residue name "MOL" to the small molecule when generating input parameters in antechamber. This allows ```SMD.py``` and ```run_window.py``` to add the ligand into the receptor interface.
 
