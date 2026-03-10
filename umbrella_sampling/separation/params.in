@@ -10,8 +10,8 @@ sampling_time = 30 # ns
 n_steps_between_sampling = 125 
 
 """Restraint parameters"""
-RMSD_restraint = backbone # heavy_atom, backbone, CA
-k_RMSD = 30 # kcal/mol AA^-2
+RMSD_restraint = CA # heavy_atom, backbone, CA
+k_RMSD = 5 # kcal/mol AA^-2
 k_Boresch = 100 # kcal/mol rad^-2
 k_sep = 10 # kcal/mol rad^-2
 
