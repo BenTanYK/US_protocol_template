@@ -1,1 +1,0 @@
-The script ```modify_pdb.py``` can be used to generate resolvated windows at each r0 value. However, this script is system-specific so you will have to modify it yourself to match your particular system of interest. A more general approach is to simply use the same input files used in ```SMD.py```. This is a bit slower but more general.
